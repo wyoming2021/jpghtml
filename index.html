@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PathToImg</title>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    .t1,
+    .t2 {
+      padding: 8px;
+      border-radius: 15px;
+      background: #efe8e8;
+      display: block;
+      margin: 20px auto;
+      font-size: 14px;
+      outline: medium;
+    }
+
+    .btn {
+      margin: 20px auto;
+      display: block;
+      border-radius: 10px;
+      background: #efe8e8;
+      border: 2px solid #807474;
+      width: 50px;
+      height: 30px;
+      line-height: 26px;
+      text-align: center;
+      cursor: pointer;
+      outline: medium;
+      color: #535353;
+    }
+
+    input[name="pre"] {
+      width: 332px;
+      border-radius: 10px;
+      padding: 5px 8px;
+      border: 1px solid gray;
+      outline: medium;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" name="pre" placeholder="地址前缀 / prefix">
+  <textarea name="imgpath" cols="45" rows="10" class="t1" placeholder="图片路径 / image paths"></textarea>
+  <button class="btn">
+    转换
+  </button>
+  <textarea class="t2" name="result" cols="45" rows="10"></textarea>
+
+  <script>
+    // how to use?
+    // first shift+right click on chosen imgfiles, then click path to get img paths, then paste it in the left then click to transfer to html img elements.
+
+    $(function () {
+      var imgPathArr;
+      $('button').click(function () {
+        imgPathArr = textToArray($('textarea[name="imgpath"]'))
+        imgElems = pathToImg(imgPathArr)
+        $('textarea[name="result"]').val(imgElems)
+      })
+
+      function textToArray(elem) {
+        var lines = elem.val().split(/\n/);
+        var texts = [];
+        for (var i = 0; i < lines.length; i++) {
+          // only push this line if it contains a non whitespace character.
+          if (/\S/.test(lines[i])) {
+            texts.push($.trim(lines[i]));
+          }
+        }
+        return texts
+      }
+
+      function pathToImg(imgPathArr) {
+        var pre = $('input[name="pre"]').val().trim()
+        var arr = $.map(imgPathArr, function (path) {
+          var arr = path.split('\\')
+          var imgName = arr[arr.length - 1].replace('"', '')
+          var imgElem = `<img src="${pre+imgName}">`
+          return imgElem
+        })
+        return arr.join('\n')
+      }
+    })
+  </script>
+</body>
+
+</html>
